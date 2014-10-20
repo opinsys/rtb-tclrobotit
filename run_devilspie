@@ -1,0 +1,3 @@
+#!/bin/sh
+
+devilspie --apply-to-existing rtb.ds
