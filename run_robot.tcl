@@ -9,8 +9,8 @@ if {$robottitiedosto eq ""} {
 
 
 # XXX these should be disabled in production
-set debugfile [open "/tmp/tclrobot-debug.txt"  "w"]
-set eventfile [open "/tmp/tclrobot-events.txt" "w"]
+# set debugfile [open "/tmp/tclrobot-debug.txt"  "w"]
+# set eventfile [open "/tmp/tclrobot-events.txt" "w"]
 
 
 proc komento {args} { proc {*}$args }
