@@ -1,7 +1,7 @@
 alku {} {
-  älä kiihdytä
+  kiihdytä
   älä käänny oikealle
-  älä käänny vasemmalle
+  käänny vasemmalle
 }
 
 tutkassa.seinä {etäisyys} {

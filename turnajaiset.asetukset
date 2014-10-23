@@ -4,4 +4,6 @@ Cookie min energy: 15
 Mine frequency [mines per second]: 0.03
 Mine max energy: 15
 Mine min energy: 10
+Robot max energy: 1000
+Robot start energy: 500
 Timeout [s]: 3600

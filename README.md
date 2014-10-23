@@ -10,7 +10,6 @@ programming educational and fun ;-)
 
 Ideas and things to do (perhaps will never happen):
 
-  - run robot control scripts in safe Tcl interpreter (!)
   - provide a complete support for realtimebattle API
   - write a wrapper GUI tool that can be used to edit a robot and control
     tournaments
