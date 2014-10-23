@@ -2,5 +2,5 @@
 
 set -eu
 
-/home/juhaerk/tclrobotit/run_robot.tcl \
-  "/home/juhaerk/tclrobotit/robotit/${USER}.robotti"
+/home/juhaerk/rtb-tclrobotit/run_robot.tcl \
+  "/home/juhaerk/rtb-tclrobotit/robotit/${USER}.robotti"

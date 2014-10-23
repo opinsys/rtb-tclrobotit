@@ -1,134 +1,148 @@
-alustus {onko_eka} {
-  if {$onko_eka} {
-    nimi "Humppa"
-    värit "00ff00 00ee00"
-  }
-}
-
-energiataso {energia} {
-  muista ENERGIA
-  aseta ENERGIA $energia
-}
-
-koordinaatit {x y suunta} {
-  muista X Y SUUNTA
-  aseta X $x
-  aseta Y $y
-  aseta SUUNTA $suunta
-
-  älä viestitä "koordinaatit on: $X $Y $SUUNTA"
-}
-
-omia.tietoja {peliaika nopeus tykinsuunta} {
-  muista PELIAIKA NOPEUS TYKINSUUNTA
-  aseta PELIAIKA $peliaika
-  aseta NOPEUS $nopeus
-  aseta TYKINSUUNTA $tykinsuunta
-}
-
-peli.alkaa {} {
-  kiihdytä
-  käänny oikealle
-  etsi.laajalti
-}
-
-robotteja.jäljellä {montako} {
-  muista ROBOTTEJA_ON $montako
-}
-
-toisen.robon.tietoja {energiataso onko_kaveri} {
-  älä viestitä "Saatiin toisen robon tiedot, energiataso ${energiataso}"
-}
-
-tutkassa.ammus {etäisyys suunta} {
-  älä jos {abs($suunta) > 0.15} { kiihdytä }
-
-  älä viestitä "tutkassa ammus, etäisyys ${etäisyys}, suunta ${suunta}"
-}
-
-tutkassa.miina {etäisyys suunta} {
-  viestitä "tutkassa miina, etäisyys ${etäisyys}, suunta ${suunta}"
-  jarruta
-  ammu
-  käänny vasemmalle
-}
-
-tutkassa.nami {etäisyys suunta} {
-  viestitä "tutkassa nami, etäisyys ${etäisyys}, suunta $suunta"
-  jos {$suunta < 0} {
-    älä viestitä "käännytään vasemmalle, suunta ${suunta}"
-    käänny vasemmalle
-  }
-  jos {$suunta > 0} {
-    älä viestitä "käännytään oikealle, suunta ${suunta}"
-    käänny oikealle
-  }
-  etsi.kapeasti
-  kiihdytä
-}
-
-tutkassa.robotti {etäisyys suunta} {
-  viestitä "tutkassa robotti, etäisyys ${etäisyys}, suunta ${suunta}"
-  ammu
-
-  lopeta etsintä
-  käänny suoraan
-  kiihdytä
-}
-
-tutkassa.seinä {etäisyys suunta} {
-  älä viestitä "tutkassa seinä, etäisyys ${etäisyys} suunta $suunta"
-
-  if {$suunta < 0} {
-    käännä robottia vasemmalle
-  }
-  if {$suunta >= 0} {
-    käännä robottia oikealle
-  }
-
-  jos {${etäisyys} < 6} {
-    älä viestitä "tutkassa seinä, etäisyys ${etäisyys}, oikealle ja jarrutetaan"
-    käänny oikealle
-    jarruta
-  }
-
-  jos {${etäisyys} >= 6} {
-    älä viestitä "tutkassa seinä, etäisyys ${etäisyys}, kiihdytetään"
-    käänny suoraan
-    kiihdytä
-  }
-}
-
-törmättiin.ammukseen {suunta} {
+alku {} {
   älä kiihdytä
+  älä käänny oikealle
   älä käänny vasemmalle
 }
 
-törmättiin.miinaan {suunta} {
+tutkassa.seinä {etäisyys} {
+  älä ammu
   älä jarruta
+  älä kiihdytä
+
+  jos {${etäisyys} < 6} {
+    älä viestitä "seinä on lähellä (etäisyys on ${etäisyys}), MITÄ TEEN?"
+    älä jarruta
+    älä kiihdytä
+    älä käänny oikealle
+    älä käänny suoraan
+    älä käänny vasemmalle
+  }
+
+  jos {${etäisyys} > 6} {
+    älä viestitä "seinä on kaukana (etäisyys on ${etäisyys}), MITÄ TEEN?"
+    älä jarruta
+    älä kiihdytä
+    älä käänny oikealle
+    älä käänny suoraan
+    älä käänny vasemmalle
+  }
 }
 
-törmättiin.namiin {suunta} {
+tutkassa.robotti {etäisyys} {
+  älä viestitä "tutkassa on robotti, robotin etäisyys on ${etäisyys}"
+
+  älä ammu
+  älä jarruta
+  älä kiihdytä
+  älä käänny oikealle
+  älä käänny suoraan
+  älä käänny vasemmalle
+}
+
+tutkassa.miina {etäisyys} {
+  älä viestitä "tutkassa on miina, miinan etäisyys on ${etäisyys}"
+
+  älä ammu
+  älä jarruta
+  älä kiihdytä
+  älä käänny oikealle
+  älä käänny suoraan
+  älä käänny vasemmalle
+}
+
+tutkassa.nami {etäisyys} {
+  älä viestitä "tutkassa on nami, namin etäisyys on ${etäisyys}"
+
+  älä ammu
+  älä jarruta
+  älä kiihdytä
+  älä käänny oikealle
+  älä käänny suoraan
+  älä käänny vasemmalle
+}
+
+tutkassa.ammus {etäisyys} {
+  älä viestitä "tutkassa on ammus, ammuksen etäisyys on ${etäisyys}"
+
+  älä jarruta
+  älä kiihdytä
+  älä käänny oikealle
+  älä käänny vasemmalle
+}
+
+törmäsin.seinään {suunta} {
+  älä viestitä "törmäsin seinään, seinä on ${suunta}"
+
+  jos {${suunta} eq "edessä"} {
+    älä viestitä "törmäsin edessä olevaan seinään, MITÄ TEEN?"
+    älä jarruta
+    älä kiihdytä
+    älä käänny oikealle
+    älä käänny suoraan
+    älä käänny vasemmalle
+  }
+
+  jos {${suunta} eq "oikealla""} {
+    älä kiihdytä
+    älä käänny vasemmalle
+  }
+
+  jos {${suunta} eq "vasemmalla""} {
+    älä jarruta
+    älä käänny oikealle
+  }
+}
+
+törmäsin.robottiin {suunta} {
+  älä viestitä "törmäsin toiseen robottiin, robotti on ${suunta}"
+
+  jos {${suunta} eq "edessä"} {
+    älä viestitä "törmäsin edessä olevaan robottiin"
+    älä ammu
+    älä jarruta
+    älä kiihdytä
+    älä käänny oikealle
+    älä käänny suoraan
+    älä käänny vasemmalle
+  }
+
+  jos {${suunta} eq "oikealla"} {
+    älä viestitä "törmäsin oikealla olevaan robottiin"
+    älä ammu
+    älä jarruta
+    älä kiihdytä
+    älä käänny oikealle
+  }
+
+  jos {${suunta} eq "takana"} {
+    älä ammu
+    älä jarruta
+    älä kiihdytä
+    älä käänny oikealle
+  }
+
+  jos {${suunta} eq "vasemmalla"} {
+    älä ammu
+    älä jarruta
+    älä kiihdytä
+    älä käänny oikealle
+  }
+}
+
+törmäsin.ammukseen {suunta} {
+  älä viestitä "oho, minua ammutaan, MITÄ TEHDÄÄN?"
+  älä jarruta
+  älä kiihdytä
+  älä käänny oikealle
+  älä käänny vasemmalle
+}
+
+törmäsin.miinaan {suunta} {
+  älä jarruta
   älä kiihdytä
 }
 
-törmättiin.robottiin {suunta} {
+törmäsin.namiin {suunta} {
   älä jarruta
+  älä kiihdytä
 }
-
-törmättiin.seinään {suunta} {
-  käänny oikealle
-  jarruta
-}
-
-kuolin {} {
-  älä viestitä "Nousen vielä haudasta!"
-  älä viestitä "Oi joi voi, kuolin!"
-}
-
-lopetus     {args} {}
-nimesi      {args} {}
-peli.loppuu {} {}
-peli.optio  {mikä mitä} {}
-varoitus    {args} {}
-värisi      {args} {}
