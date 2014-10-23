@@ -31,7 +31,6 @@ tutkassa.seinä {etäisyys} {
 tutkassa.robotti {etäisyys} {
   älä viestitä "tutkassa on robotti, robotin etäisyys on ${etäisyys}"
 
-  älä ammu
   älä jarruta
   älä kiihdytä
   älä käänny oikealle
