@@ -46,7 +46,7 @@ proc play {} {
 
   set codetext [.robotcode get 1.0 end]
 
-  set codefile [open "$robotsdir/$env(USER).robotti" w]
+  set codefile [open "${robotsdir}/$env(USER).robotti" w]
   puts $codefile $codetext
   close $codefile
 
@@ -69,12 +69,27 @@ proc play {} {
   after 30000 exec rm -f $tournament_tmpfile
 }
 
-proc read_robot_template {} {
+proc read_robot_code {} {
+  global env
   global robotsdir
 
-  set template_file_fd [open "${robotsdir}/.template"]
-  set robotcode_text [read $template_file_fd]
-  close $template_file_fd
+  set robotcode_text ""
+
+  set filepaths [list "${robotsdir}/$env(USER).robotti" \
+		      "${robotsdir}/.template"]
+  foreach path $filepaths {
+    if {![catch {
+           set robot_file_fd [open $path]
+           set robotcode_text [read $robot_file_fd]
+           close $robot_file_fd
+         ]} {
+      break
+    }
+  }
+
+  if {$robotcode_text eq ""} {
+    error "Could not read robot code!"
+  }
 
   .robotcode delete 1.0 end
   .robotcode insert end $robotcode_text
@@ -91,13 +106,13 @@ proc stop_the_fight {} {
 
 text .robotcode -yscrollcommand {.scroll set} -wrap none
 
-read_robot_template
+read_robot_code
 
 scrollbar .scroll -command {.robotcode yview}
 
 frame .buttons
 
-button .buttons.reset -command read_robot_template -text "Tuhoa ohjelma"
+button .buttons.reset -command read_robot_code -text "Tuhoa ohjelma"
 button .buttons.play  -command play -text "Pelaa!"
 button .buttons.stop  -command stop_the_fight -text "Keskeytä taistelu"
 
