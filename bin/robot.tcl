@@ -63,22 +63,27 @@ robotinterp eval {
   # ymmärrettävää (aloittelijavaiheessa)
   #
 
-  komento alustus {getent_robotin_username oma_uid robotti_ok} {
-    set virheviesti [expr { $robotti_ok ? "" : " (VIRHE)" }]
+  komento alustus {getent_robot robotin_username oma_uid robotti_ok} {
+    aseta virheviesti [expr { $robotti_ok ? "" : " (VIRHE)" }]
 
-    if {$getent_robotin_username eq ""} {
-      nimi "???"
-      return
+    aseta nimi ""
+    aseta robotin_uid ""
+
+    if {$getent_robot eq ""} {
+      aseta nimi $robotin_username
+    } else {
+      aseta kentät [split $getent_robot :]
+      aseta nimi [lindex ${kentät} 4]
+      aseta robotin_uid [lindex ${kentät} 2]
     }
 
-    aseta kentät [split $getent_robotin_username :]
-    aseta nimi [lindex ${kentät} 4]
     if {$nimi ne ""} {
       nimi "${nimi}${virheviesti}"
+    } else {
+      nimi "???${virheviesti}"
     }
 
-    aseta robotin_uid [lindex ${kentät} 2]
-    if {$oma_uid eq $robotin_uid} {
+    if {$robotin_uid ne ""  &&  $oma_uid eq $robotin_uid} {
       värit "ff0000 dd0000"
     }
   }
@@ -286,9 +291,10 @@ proc dispatch_event {event_type args} {
 
   if {$cmd eq "alustus" && [lindex $args 0]} {
     # do this here because can't do exec in safe interpreter
-    set getent  [exec getent passwd $robotin_username]
+    set getent ""
+    catch { set getent [exec getent passwd $robotin_username] }
     set oma_uid [exec id -u]
-    set call_args [list $getent $oma_uid $robot_ok]
+    set call_args [list $getent $robotin_username $oma_uid $robot_ok]
   } else {
     set call_args $args
   }
