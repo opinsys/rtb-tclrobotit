@@ -82,7 +82,7 @@ proc read_robot_code {} {
            set robot_file_fd [open $path]
            set robotcode_text [read $robot_file_fd]
            close $robot_file_fd
-         ]} {
+         }]} {
       break
     }
   }
