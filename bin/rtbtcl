@@ -99,7 +99,7 @@ proc stop_the_fight {} {
   global realtimebattle_pid
 
   if {$realtimebattle_pid ne ""} {
-    exec kill $realtimebattle_pid
+    catch { exec kill $realtimebattle_pid }
     set realtimebattle_pid ""
   }
 }
