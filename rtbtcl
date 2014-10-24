@@ -1,0 +1,111 @@
+#!/usr/bin/wish8.6
+
+set realtimebattle_pid ""
+set rtbtcl_tournament_dir [lindex $argv 0]
+set robotsdir "$rtbtcl_tournament_dir/robotit"
+
+if {![file exists $rtbtcl_tournament_dir]} {
+  puts stderr "Could not find tournament directory!"
+  exit 1
+}
+
+proc write_temp_tournament_file {tournament_tmpfile} {
+  global robotsdir
+  global rtbtcl_tournament_dir
+
+  set time [clock seconds]
+
+  set recent_robots [list]
+  foreach robotfile [glob -nocomplain "${robotsdir}/*.robotti"] {
+    if {[file mtime $robotfile] >= ($time - 600)} {
+      set robotuser [file rootname [file tail $robotfile]]
+      lappend recent_robots \
+              "${rtbtcl_tournament_dir}/robots/${robotuser}.robot"
+    }
+  }
+
+  if {[llength $recent_robots] <= 1} {
+    error "Not enough robots!"
+  }
+
+  set text ""
+  append text "Arenas: /usr/lib/realtimebattle/Arenas/Diamond.arena\n"
+  append text "Robots: [join $recent_robots]\n"
+  append text "Robots/Sequence: 2000\n"
+
+  set tmpfile_fd [open $tournament_tmpfile w]
+  puts $tmpfile_fd $text
+  close $tmpfile_fd
+}
+
+proc play {} {
+  global env
+  global realtimebattle_pid
+  global robotsdir
+  global rtbtcl_tournament_dir
+
+  set codetext [.robotcode get 1.0 end]
+
+  set codefile [open "$robotsdir/$env(USER).robotti" w]
+  puts $codefile $codetext
+  close $codefile
+
+  set tournament_tmpfile [exec mktemp /tmp/rtbtcl.tournament.XXXXXXXXXX]
+  if {![catch { write_temp_tournament_file $tournament_tmpfile }]} {
+    set timestamp [clock format [clock seconds] -format %Y-%m-%d-%k%M%S]
+    set stats_filename "turnajaiset-$env(USER)-$timestamp.tilastot"
+
+    stop_the_fight
+
+    set realtimebattle_pid [
+      exec realtimebattle \
+           --option_file "${rtbtcl_tournament_dir}/turnajaiset.asetukset"     \
+           --statistics "${rtbtcl_tournament_dir}/tilastot/${stats_filename}" \
+           --tournament_file $tournament_tmpfile &
+    ]
+  }
+
+  # XXX yes this is a bit ugly (remove tempfile after half a minute)
+  after 30000 exec rm -f $tournament_tmpfile
+}
+
+proc read_robot_template {} {
+  global robotsdir
+
+  set template_file_fd [open "${robotsdir}/.template"]
+  set robotcode_text [read $template_file_fd]
+  close $template_file_fd
+
+  .robotcode delete 1.0 end
+  .robotcode insert end $robotcode_text
+}
+
+proc stop_the_fight {} {
+  global realtimebattle_pid
+
+  if {$realtimebattle_pid ne ""} {
+    exec kill $realtimebattle_pid
+    set realtimebattle_pid ""
+  }
+}
+
+text .robotcode -yscrollcommand {.scroll set} -wrap none
+
+read_robot_template
+
+scrollbar .scroll -command {.robotcode yview}
+
+frame .buttons
+
+button .buttons.reset -command read_robot_template -text "Tuhoa ohjelma"
+button .buttons.play  -command play -text "Pelaa!"
+button .buttons.stop  -command stop_the_fight -text "Keskeytä taistelu"
+
+pack .buttons.reset -side left  -fill x
+pack .buttons.stop  -side right -fill x
+pack .buttons.play  -side right -expand 1 -fill x
+
+pack .buttons -fill x
+
+pack .scroll -side right -fill y
+pack .robotcode -expand 1 -side left -fill both
