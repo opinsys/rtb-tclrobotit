@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Name=Rtbtcl
+Comment=Rtbtcl
+Exec=/home/share/yhteiset/osjys/Ohjelmat/rtb/bin/startup_rtbtcl
+Terminal=false
+Type=Application
+Categories=Games;
+NoDisplay=true
+X-GNOME-Autostart-enabled=true
+X-GNOME-Autostart-Phase=Application

@@ -1,9 +1,0 @@
-#!/bin/sh
-
-set -eu
-
-tilastotiedosto="tilastot/turnajaiset.${USER}-$(date +%F-%T)"
-
-realtimebattle --option_file turnajaiset.asetukset \
-	       --statistics_file "$tilastotiedosto" \
-               --tournament_file turnajaiset.pelit

@@ -1,0 +1,5 @@
+#!/bin/sh
+
+set -eu
+
+exec devilspie --apply-to-existing "$1"

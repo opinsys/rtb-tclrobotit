@@ -11,8 +11,6 @@ programming educational and fun ;-)
 Ideas and things to do (perhaps will never happen):
 
   - provide a complete support for realtimebattle API
-  - write a wrapper GUI tool that can be used to edit a robot and control
-    tournaments
   - write some actual, more intelligent robots
   - provide translations of the robot language
   - turn realtimebattle into a racing car simulator (or something else

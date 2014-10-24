@@ -1,3 +1,0 @@
-Arenas: /usr/lib/realtimebattle/Arenas/Diamond.arena
-Robots: /home/juhaerk/rtb-tclrobotit/bin/* /usr/lib/realtimebattle/Robots/rotate_and_fire_blocking.robot /usr/lib/realtimebattle/Robots/rotate_and_fire_select.robot /usr/lib/realtimebattle/Robots/rotate_and_fire_signal.robot /usr/lib/realtimebattle/Robots/seek_and_destroy.robot /usr/lib/realtimebattle/Robots/thomas2.robot
-Robots/Sequence: 2000

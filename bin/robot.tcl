@@ -14,6 +14,7 @@ if {![file exists $robottitiedosto]} { exit 0 }
 global robotin_username
 set robotin_username [file rootname [file tail $robottitiedosto]]
 
+global robot_ok
 
 interp create -safe robotinterp
 
@@ -44,9 +45,17 @@ robotinterp eval {
   komento laske {args} { uplevel 1 expr $args }
 
   komento robottikoodi {tapahtumamääritelmät} {
-    foreach {tapahtuma vars code} ${tapahtumamääritelmät} {
-      proc $tapahtuma $vars $code
+    set code {
+      foreach {tapahtuma vars code} ${tapahtumamääritelmät} {
+        proc $tapahtuma $vars $code
+      }
     }
+
+    if {[ catch { eval $code } ]} {
+      return false
+    }
+
+   return true
   }
 
   #
@@ -54,7 +63,9 @@ robotinterp eval {
   # ymmärrettävää (aloittelijavaiheessa)
   #
 
-  komento alustus {getent_robotin_username oma_uid} {
+  komento alustus {getent_robotin_username oma_uid robotti_ok} {
+    set virheviesti [expr { $robotti_ok ? "" : " (VIRHE)" }]
+
     if {$getent_robotin_username eq ""} {
       nimi "???"
       return
@@ -63,7 +74,7 @@ robotinterp eval {
     aseta kentät [split $getent_robotin_username :]
     aseta nimi [lindex ${kentät} 4]
     if {$nimi ne ""} {
-      nimi "$nimi"
+      nimi "${nimi}${virheviesti}"
     }
 
     aseta robotin_uid [lindex ${kentät} 2]
@@ -243,6 +254,7 @@ proc lue_tiedosto {polku} {
 }
 
 proc dispatch_event {event_type args} {
+  global robot_ok
   global robotinterp
   global robotin_username
 
@@ -276,7 +288,7 @@ proc dispatch_event {event_type args} {
     # do this here because can't do exec in safe interpreter
     set getent  [exec getent passwd $robotin_username]
     set oma_uid [exec id -u]
-    set call_args [list $getent $oma_uid]
+    set call_args [list $getent $oma_uid $robot_ok]
   } else {
     set call_args $args
   }
@@ -299,7 +311,9 @@ proc readevent {chan} {
   }
 }
 
-robotinterp eval robottikoodi [list [lue_tiedosto $robottitiedosto]]
+set robot_ok [
+  robotinterp eval robottikoodi [list [lue_tiedosto $robottitiedosto]]
+]
 
 fileevent stdin readable [list readevent stdin]
 

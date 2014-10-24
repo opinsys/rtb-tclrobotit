@@ -1,0 +1,11 @@
+#!/bin/sh
+
+set -eu
+
+dir=$(dirname $0)
+
+pkill -U "$USER" -x devilspie || true
+
+${dir}/rtb-devilspie ${dir}/../rtb.ds >/dev/null 2>&1 &
+
+exec ${dir}/rtbtcl
